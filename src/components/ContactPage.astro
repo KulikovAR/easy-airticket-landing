@@ -1,0 +1,72 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Hero from './Hero.astro';
+import { ui, type Lang } from '../data/site';
+import { company, type CompanyField } from '../data/company';
+import { paths } from '../data/routes';
+import { breadcrumbSchema } from '../lib/schema';
+import { companyHtml, phLabel } from '../lib/placeholder';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = ui[lang];
+const c = {
+  tr: {
+    title: 'İletişim — Easy Airticket',
+    description: 'Easy Airticket iletişim bilgileri: telefon, WhatsApp, e-posta ve şirket bilgileri.',
+    lead: 'Sorularınız için bize WhatsApp, telefon veya e-posta ile ulaşın.',
+    whatsapp: 'WhatsApp ile yazın',
+    companyTitle: 'Şirket bilgileri',
+    rows: [
+      ['Unvan', 'legalName'], ['Adres', 'address'], ['Telefon', 'phone'], ['WhatsApp', 'whatsapp'], ['E-posta', 'email'],
+      ['Çalışma saatleri', 'workingHours'], ['MERSİS No', 'mersis'], ['Vergi dairesi / No', 'taxOffice'],
+      ['Ticaret sicil no', 'tradeRegistry'], ['KEP adresi', 'kep'], ['TÜRSAB Belge No', 'tursab'],
+      ['ETBİS kaydı', 'etbis'], ['Instagram', 'instagram'],
+    ],
+  },
+  en: {
+    title: 'Contact — Easy Airticket',
+    description: 'Easy Airticket contact details: phone, WhatsApp, email and company information.',
+    lead: 'Reach us on WhatsApp, by phone or by email.',
+    whatsapp: 'Message us on WhatsApp',
+    companyTitle: 'Company details',
+    rows: [
+      ['Legal name', 'legalName'], ['Address', 'address'], ['Phone', 'phone'], ['WhatsApp', 'whatsapp'], ['Email', 'email'],
+      ['Working hours', 'workingHours'], ['MERSIS No', 'mersis'], ['Tax office / No', 'taxOffice'],
+      ['Trade registry no', 'tradeRegistry'], ['KEP address', 'kep'], ['TÜRSAB licence no', 'tursab'],
+      ['ETBİS registration', 'etbis'], ['Instagram', 'instagram'],
+    ],
+  },
+}[lang] as { title: string; description: string; lead: string; whatsapp: string; companyTitle: string; rows: [string, CompanyField][] };
+
+const crumbs = [
+  { name: t.home, href: paths.home[lang] },
+  { name: t.navContact, href: paths.contact[lang] },
+];
+const cell = (f: CompanyField) => {
+  if (f === 'taxOffice') return `${companyHtml('taxOffice', lang)} / ${companyHtml('taxNumber', lang)}`;
+  if (f === 'whatsapp' && company.whatsapp) return `<a href="https://wa.me/${company.whatsapp}" rel="nofollow">+${company.whatsapp}</a>`;
+  if ((f === 'etbis' || f === 'instagram') && company[f]) return `<a href="${company[f]}" rel="noopener" target="_blank">${company[f]}</a>`;
+  return companyHtml(f, lang);
+};
+---
+<Layout lang={lang} title={c.title} description={c.description} alternates={paths.contact} schema={[breadcrumbSchema(crumbs)]}>
+  <Hero lang={lang} h1={t.navContact} lead={c.lead} crumbs={crumbs} search={false} compact />
+  <section class="section">
+    <div class="container narrow">
+      <div class="contact-actions">
+        {company.whatsapp
+          ? <a class="search__btn btn--whatsapp" href={`https://wa.me/${company.whatsapp}`} rel="nofollow">{c.whatsapp}</a>
+          : <span class="search__btn btn--whatsapp is-disabled">{c.whatsapp} <mark class="ph">{phLabel('whatsapp', lang)}</mark></span>}
+      </div>
+      <h2>{c.companyTitle}</h2>
+      <table class="details">
+        <tbody>
+          {c.rows.map(([label, field]) => (
+            <tr><th scope="row">{label}</th><td set:html={cell(field)} /></tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </section>
+</Layout>

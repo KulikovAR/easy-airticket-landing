@@ -1,0 +1,40 @@
+---
+import { marked } from 'marked';
+import Layout from '../layouts/Layout.astro';
+import Hero from './Hero.astro';
+import { ui, price, type Lang } from '../data/site';
+import { company } from '../data/company';
+import { legalDocs, type LegalDoc } from '../data/legal';
+import { legalPath, paths } from '../data/routes';
+import { breadcrumbSchema } from '../lib/schema';
+import { fillTokens } from '../lib/placeholder';
+
+interface Props { doc: LegalDoc; lang: Lang }
+const { doc, lang } = Astro.props;
+const t = ui[lang];
+
+const sources = import.meta.glob('../content/legal/*/*.md', { query: '?raw', import: 'default', eager: true }) as Record<string, string>;
+const raw = sources[`../content/legal/${lang}/${doc.id}.md`];
+if (!raw) throw new Error(`Missing legal document ${lang}/${doc.id}.md`);
+
+// Links between legal documents: {{link_refund}} → <a href="…">İptal ve İade Koşulları</a>
+const linkTokens = Object.fromEntries(
+  legalDocs.map((d) => [`link_${d.id.replaceAll('-', '_')}`, `<a href="${legalPath(d[lang].slug, lang)}">${d[lang].title}</a>`]),
+);
+const html = await marked.parse(
+  fillTokens(raw, lang, { brand: company.brand, website: company.website, price: price[lang].display, ...linkTokens }),
+);
+
+const path = legalPath(doc[lang].slug, lang);
+const alternates = { tr: legalPath(doc.tr.slug, 'tr'), en: legalPath(doc.en.slug, 'en') };
+const crumbs = [
+  { name: t.home, href: paths.home[lang] },
+  { name: doc[lang].title, href: path },
+];
+---
+<Layout lang={lang} title={`${doc[lang].title} — ${company.brand}`} description={doc[lang].description} alternates={alternates} schema={[breadcrumbSchema(crumbs)]}>
+  <Hero lang={lang} h1={doc[lang].title} lead={company.website.replace('https://', '')} crumbs={crumbs} search={false} compact />
+  <section class="section">
+    <article class="container narrow prose legal" set:html={html} />
+  </section>
+</Layout>

@@ -1,0 +1,64 @@
+---
+import { ui, type Lang } from '../data/site';
+import { company } from '../data/company';
+import { countries } from '../data/countries';
+import { cities } from '../data/cities';
+import { legalDocs } from '../data/legal';
+import { landingPath, legalPath, paths } from '../data/routes';
+import { companyHtml } from '../lib/placeholder';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = ui[lang];
+const year = new Date().getFullYear();
+---
+<footer class="footer">
+  <div class="container footer__grid">
+    <div class="footer__col footer__about">
+      <a class="logo logo--dark" href={paths.home[lang]}>
+        <span class="logo__mark"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg></span>
+        {company.brand}
+      </a>
+      <p>{t.footerTagline}</p>
+      <ul class="footer__contacts">
+        <li><Fragment set:html={companyHtml('legalName', lang)} /></li>
+        <li><Fragment set:html={companyHtml('address', lang)} /></li>
+        <li><Fragment set:html={companyHtml('phone', lang)} /> · <Fragment set:html={companyHtml('email', lang)} /></li>
+        <li>WhatsApp: {company.whatsapp
+          ? <a href={`https://wa.me/${company.whatsapp}`} rel="nofollow">+{company.whatsapp}</a>
+          : <Fragment set:html={companyHtml('whatsapp', lang)} />}</li>
+        <li>{t.hours}: <Fragment set:html={companyHtml('workingHours', lang)} /></li>
+        <li>{t.tursab}: <Fragment set:html={companyHtml('tursab', lang)} /></li>
+        <li>{t.etbis}: {company.etbis
+          ? <a href={company.etbis} rel="nofollow noopener" target="_blank">eticaret.gov.tr</a>
+          : <Fragment set:html={companyHtml('etbis', lang)} />}</li>
+        <li>Instagram: {company.instagram
+          ? <a href={company.instagram} rel="noopener" target="_blank">@{company.instagram.replace(/\/$/, '').split('/').pop()}</a>
+          : <Fragment set:html={companyHtml('instagram', lang)} />}</li>
+      </ul>
+    </div>
+    <div class="footer__col">
+      <h3>{t.footerCountries}</h3>
+      <ul>{countries.map((c) => <li><a href={landingPath(c[lang].slug, lang)}>{c[lang].name}</a></li>)}</ul>
+    </div>
+    <div class="footer__col">
+      <h3>{t.footerCities}</h3>
+      <ul>{cities.map((c) => <li><a href={landingPath(c[lang].slug, lang)}>{c[lang].name}</a></li>)}</ul>
+    </div>
+    <div class="footer__col">
+      <h3>{t.footerLegal}</h3>
+      <ul>
+        {legalDocs.map((d) => <li><a href={legalPath(d[lang].slug, lang)}>{d[lang].title}</a></li>)}
+        <li><a href={paths.faq[lang]}>{t.faqTitle}</a></li>
+        <li><a href={paths.contact[lang]}>{t.footerContact}</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="container">
+    <p class="footer__disclaimer">{t.disclaimer}</p>
+  </div>
+  <div class="container footer__bottom">
+    <span>© {year} {company.brand}</span>
+    <span>{t.payment}: Visa · Mastercard · Troy — <Fragment set:html={companyHtml('paymentProvider', lang)} /></span>
+  </div>
+</footer>

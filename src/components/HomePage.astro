@@ -1,0 +1,134 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Hero from './Hero.astro';
+import HowItWorks from './HowItWorks.astro';
+import LinkGrid from './LinkGrid.astro';
+import FaqList from './FaqList.astro';
+import Cta from './Cta.astro';
+import { ui, price, type Lang } from '../data/site';
+import { countries } from '../data/countries';
+import { cities } from '../data/cities';
+import { generalFaq } from '../data/faq';
+import { paths } from '../data/routes';
+import { faqSchema, serviceSchema } from '../lib/schema';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = ui[lang];
+const p = price[lang].display;
+
+const c = {
+  tr: {
+    title: 'Vize İçin Uçak Bileti Rezervasyonu — PNR Kodlu | Easy Airticket',
+    description: `Vize başvurusu için doğrulanabilir PNR kodlu uçak rezervasyonu. Bilet ücreti yok, yalnızca ${p} hizmet bedeli. Belgeler 30 dakikada, 7 güne kadar geçerli.`,
+    h1: 'Vize başvurusu için uçak bileti rezervasyonu',
+    lead: 'Biletin tam fiyatını ödemeden gerçek, PNR koduyla doğrulanabilir bir uçuş rezervasyonu alın. Belgeler 30 dakika içinde e-postanızda.',
+    whyTitle: 'Neden bilet değil, rezervasyon?',
+    why: [
+      ['Paranız risk altında değil', 'Vize reddedilirse iade edilmeyen bilet ücretini kaybetmezsiniz. Yalnızca hizmet bedeli ödersiniz.'],
+      ['Konsolosluklar kabul ediyor', 'Schengen ülkeleri ve birçok konsolosluk satın alınmış bilet değil, doğrulanabilir uçuş rezervasyonu ister.'],
+      ['Gerçek ve doğrulanabilir', 'Rezervasyon havayolu sisteminde kayıtlıdır ve PNR koduyla sorgulanabilir. Sahte veya düzenlenmiş belge değildir.'],
+      ['Hızlı ve online', 'Ofise gitmeden, Türkiye’nin her yerinden sipariş verin. Belgeler 30 dakikada e-postanızda.'],
+    ],
+    docTitle: 'Rezervasyon belgesinde neler yer alır?',
+    docList: [
+      'PNR (rezervasyon) kodu',
+      'Yolcu adı ve soyadı — pasaporttaki gibi',
+      'Havayolu, uçuş numaraları ve sınıf',
+      'Kalkış ve varış havalimanları, tarih ve saatler',
+      'Gidiş-dönüş veya çok duraklı (multi-city) rota',
+    ],
+    priceTitle: 'Tek fiyat, gizli ücret yok',
+    priceText: 'Rota, havayolu veya tarih fark etmeksizin rezervasyon başına sabit hizmet bedeli.',
+    priceItems: ['Doğrulanabilir PNR kodu', '7 güne kadar geçerlilik', '30 dakikada e-posta ile teslim', 'Herhangi bir banka kartıyla ödeme'],
+    allFaq: 'Tüm sorular',
+  },
+  en: {
+    title: 'Dummy Ticket & Flight Reservation for Visa | Easy Airticket',
+    description: `Flight reservation (dummy ticket) for your visa with a verifiable PNR. No ticket price, only a ${p} fee. Documents in 30 minutes, valid up to 7 days.`,
+    h1: 'Flight reservation for your visa application',
+    lead: 'Get a real flight booking verifiable by its PNR — without paying the full ticket price. Documents in your inbox within 30 minutes.',
+    whyTitle: 'Why a reservation instead of a ticket?',
+    why: [
+      ['Your money is safe', 'If the visa is refused you don’t lose a non-refundable fare. You only pay a service fee.'],
+      ['Accepted by consulates', 'Schengen countries and many other consulates ask for a verifiable flight reservation, not a purchased ticket.'],
+      ['Real and verifiable', 'The reservation is registered in the airline system and can be checked by its PNR. It is not a fake or edited document.'],
+      ['Fast and online', 'Order from anywhere in Türkiye without visiting an office. Documents in your inbox within 30 minutes.'],
+    ],
+    docTitle: 'What does the reservation document include?',
+    docList: [
+      'PNR (booking) code',
+      'Passenger name — exactly as in the passport',
+      'Airline, flight numbers and class',
+      'Departure and arrival airports, dates and times',
+      'Round-trip or multi-city itinerary',
+    ],
+    priceTitle: 'One price, no hidden fees',
+    priceText: 'A fixed service fee per reservation, whatever the route, airline or dates.',
+    priceItems: ['Verifiable PNR code', 'Valid for up to 7 days', 'Delivered by email in 30 minutes', 'Pay with any bank card'],
+    allFaq: 'All questions',
+  },
+}[lang];
+
+const faqItems = generalFaq[lang].slice(0, 6);
+const schema = [serviceSchema(lang, c.h1, paths.home[lang]), faqSchema(faqItems)];
+---
+<Layout lang={lang} title={c.title} description={c.description} alternates={paths.home} schema={schema}>
+  <Hero lang={lang} h1={c.h1} lead={c.lead} />
+
+  <section class="section">
+    <div class="container">
+      <h2>{c.whyTitle}</h2>
+      <div class="features">
+        {c.why.map(([h, body]) => (
+          <article class="feature">
+            <h3>{h}</h3>
+            <p>{body}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <HowItWorks lang={lang} />
+
+  <section class="section section--white">
+    <div class="container split">
+      <div>
+        <h2>{c.docTitle}</h2>
+        <ul class="checklist">{c.docList.map((i) => <li>{i}</li>)}</ul>
+      </div>
+      <div class="price-card">
+        <h3>{c.priceTitle}</h3>
+        <p class="price-card__amount">{price[lang].display}</p>
+        <p>{c.priceText}</p>
+        <ul class="checklist">{c.priceItems.map((i) => <li>{i}</li>)}</ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id={lang === 'tr' ? 'ulkeler' : 'countries'}>
+    <div class="container">
+      <h2>{t.countriesTitle}</h2>
+      <p class="section__lead">{t.countriesLead}</p>
+      <LinkGrid items={countries} lang={lang} />
+    </div>
+  </section>
+
+  <section class="section section--white" id={lang === 'tr' ? 'sehirler' : 'cities'}>
+    <div class="container">
+      <h2>{t.citiesTitle}</h2>
+      <p class="section__lead">{t.citiesLead}</p>
+      <LinkGrid items={cities} lang={lang} />
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container narrow">
+      <FaqList items={faqItems} title={t.faqTitle} />
+      <p><a class="link" href={paths.faq[lang]}>{c.allFaq} →</a></p>
+    </div>
+  </section>
+
+  <Cta lang={lang} />
+</Layout>

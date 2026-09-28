@@ -1,0 +1,40 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Hero from './Hero.astro';
+import FaqList from './FaqList.astro';
+import Cta from './Cta.astro';
+import { ui, type Lang } from '../data/site';
+import { generalFaq } from '../data/faq';
+import { paths } from '../data/routes';
+import { breadcrumbSchema, faqSchema } from '../lib/schema';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = ui[lang];
+const items = generalFaq[lang];
+const c = {
+  tr: {
+    title: 'Vize İçin Uçak Rezervasyonu — Sıkça Sorulan Sorular | Easy Airticket',
+    description: 'Vize için uçak rezervasyonu hakkında sık sorulan sorular: PNR kodu, geçerlilik süresi, konsolosluk kabulü, ücret ve iade koşulları.',
+    lead: 'Vize için uçuş rezervasyonu, PNR kodu, geçerlilik ve ödeme hakkında merak ettikleriniz.',
+  },
+  en: {
+    title: 'Flight Reservation for Visa — FAQ | Easy Airticket',
+    description: 'Frequently asked questions about flight reservations for visas: PNR code, validity, consulate acceptance, price and refunds.',
+    lead: 'Everything about flight reservations for visas, PNR codes, validity and payment.',
+  },
+}[lang];
+const crumbs = [
+  { name: t.home, href: paths.home[lang] },
+  { name: t.faqTitle, href: paths.faq[lang] },
+];
+---
+<Layout lang={lang} title={c.title} description={c.description} alternates={paths.faq} schema={[faqSchema(items), breadcrumbSchema(crumbs)]}>
+  <Hero lang={lang} h1={t.faqTitle} lead={c.lead} crumbs={crumbs} search={false} compact />
+  <section class="section">
+    <div class="container narrow">
+      <FaqList items={items} />
+    </div>
+  </section>
+  <Cta lang={lang} />
+</Layout>

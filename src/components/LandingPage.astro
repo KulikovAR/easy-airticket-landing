@@ -1,0 +1,77 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Hero from './Hero.astro';
+import HowItWorks from './HowItWorks.astro';
+import LinkGrid from './LinkGrid.astro';
+import FaqList from './FaqList.astro';
+import Cta from './Cta.astro';
+import { ui, price, type Lang } from '../data/site';
+import { countries } from '../data/countries';
+import { cities } from '../data/cities';
+import type { Landing } from '../data/types';
+import { landingPath, paths } from '../data/routes';
+import { breadcrumbSchema, faqSchema, serviceSchema } from '../lib/schema';
+
+interface Props { landing: Landing; lang: Lang }
+const { landing, lang } = Astro.props;
+const t = ui[lang];
+const c = landing[lang];
+const path = landingPath(c.slug, lang);
+const alternates = { tr: landingPath(landing.tr.slug, 'tr'), en: landingPath(landing.en.slug, 'en') };
+
+const isCountry = landing.kind === 'country';
+const crumbs = [
+  { name: t.home, href: paths.home[lang] },
+  { name: isCountry ? t.navCountries : t.navCities, href: `${paths.home[lang]}#${isCountry ? (lang === 'tr' ? 'ulkeler' : 'countries') : (lang === 'tr' ? 'sehirler' : 'cities')}` },
+  { name: c.name, href: path },
+];
+const schema = [serviceSchema(lang, c.h1, path), faqSchema(c.faq), breadcrumbSchema(crumbs)];
+---
+<Layout lang={lang} title={c.title} description={c.description} alternates={alternates} schema={schema}>
+  <Hero lang={lang} h1={c.h1} lead={c.lead} crumbs={crumbs} />
+
+  <section class="section">
+    <div class="container article">
+      <div class="article__main">
+        <div class="article__intro">
+          {c.intro.map((p) => <p>{p}</p>)}
+        </div>
+        {c.sections.map((s, i) => (
+          <section class="block">
+            <h2><span class="block__num">{i + 1}</span>{s.h2}</h2>
+            {s.paragraphs?.map((p) => <p>{p}</p>)}
+            {s.list && <ul class="ticks">{s.list.map((item) => <li>{item}</li>)}</ul>}
+          </section>
+        ))}
+      </div>
+      <aside class="article__aside">
+        <div class="summary">
+          <span class="summary__label">{t.feeLabel}</span>
+          <span class="summary__price">{price[lang].display}</span>
+          <ul class="summary__list">{t.badges.map((b) => <li>{b}</li>)}</ul>
+          <a class="search__btn" href="#search-form" data-cta>{t.ctaButton}</a>
+          <a class="summary__faq" href={paths.faq[lang]}>{t.faqTitle} →</a>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <HowItWorks lang={lang} />
+
+  <section class="section section--white">
+    <div class="container narrow">
+      <FaqList items={c.faq} title={t.faqTitle} />
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <h2>{isCountry ? t.relatedCountries : t.relatedCities}</h2>
+      <LinkGrid items={isCountry ? countries : cities} lang={lang} exclude={landing.id} />
+      <h2 class="mt">{isCountry ? t.citiesTitle : t.countriesTitle}</h2>
+      <LinkGrid items={isCountry ? cities : countries} lang={lang} />
+    </div>
+  </section>
+
+  <Cta lang={lang} />
+</Layout>

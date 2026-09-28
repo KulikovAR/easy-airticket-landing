@@ -1,0 +1,12 @@
+---
+import type { GetStaticPaths } from 'astro';
+import LandingPage from '../../components/LandingPage.astro';
+import { countries } from '../../data/countries';
+import { cities } from '../../data/cities';
+
+export const getStaticPaths = (() =>
+  [...countries, ...cities].map((landing) => ({ params: { slug: landing.en.slug }, props: { landing } }))) satisfies GetStaticPaths;
+
+const { landing } = Astro.props;
+---
+<LandingPage landing={landing} lang="en" />

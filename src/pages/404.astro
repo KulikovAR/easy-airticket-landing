@@ -1,0 +1,14 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Hero from '../components/Hero.astro';
+import { ui } from '../data/site';
+const t = ui.tr;
+---
+<Layout lang="tr" title={`${t.notFoundTitle} — Easy Airticket`} description={t.notFoundText} noindex>
+  <Hero lang="tr" h1={t.notFoundTitle} lead={t.notFoundText} search={false} compact />
+  <section class="section">
+    <div class="container narrow">
+      <p><a class="search__btn" href="/">{t.notFoundBack}</a> &nbsp; <a class="link" href="/en/">English →</a></p>
+    </div>
+  </section>
+</Layout>

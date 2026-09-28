@@ -1,0 +1,5 @@
+Contact: https://easy-airticket.com/iletisim/
+Expires: 2027-09-28T00:00:00.000Z
+Preferred-Languages: tr, en
+Canonical: https://easy-airticket.com/.well-known/security.txt
+Policy: https://easy-airticket.com/yasal/kullanim-kosullari/

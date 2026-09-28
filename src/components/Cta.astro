@@ -1,0 +1,18 @@
+---
+import { ui, price, type Lang } from '../data/site';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = ui[lang];
+---
+<section class="cta">
+  <div class="container cta__inner">
+    <div>
+      <h2>{t.ctaTitle}</h2>
+      <p>{t.ctaText}</p>
+    </div>
+    <div class="cta__action">
+      <span class="cta__price">{price[lang].display}</span>
+      <a class="search__btn" href="#search-form" data-cta>{t.ctaButton}</a>
+    </div>
+  </div>
+</section>

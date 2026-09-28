@@ -2,12 +2,28 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://easy-airticket.com/</loc>
-    <xhtml:link rel="alternate" hreflang="tr" href="https://easy-airticket.com/"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://easy-airticket.com/en/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://easy-airticket.com/"/>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://easy-airticket.com/tr/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://easy-airticket.com/"/>
   </url>
   <url>
-    <loc>https://easy-airticket.com/en/</loc>
-    <xhtml:link rel="alternate" hreflang="tr" href="https://easy-airticket.com/"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://easy-airticket.com/en/"/>
+    <loc>https://easy-airticket.com/tr/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://easy-airticket.com/"/>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://easy-airticket.com/tr/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://easy-airticket.com/"/>
+  </url>
+  <url>
+    <loc>https://easy-airticket.com/blog/flight-reservation-for-visa/</loc>
+    <lastmod>2026-09-24</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://easy-airticket.com/blog/flight-reservation-for-visa/"/>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://easy-airticket.com/tr/blog/vize-icin-ucus-rezervasyonu/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://easy-airticket.com/blog/flight-reservation-for-visa/"/>
+  </url>
+  <url>
+    <loc>https://easy-airticket.com/tr/blog/vize-icin-ucus-rezervasyonu/</loc>
+    <lastmod>2026-09-24</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://easy-airticket.com/blog/flight-reservation-for-visa/"/>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://easy-airticket.com/tr/blog/vize-icin-ucus-rezervasyonu/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://easy-airticket.com/blog/flight-reservation-for-visa/"/>
   </url>
 </urlset>

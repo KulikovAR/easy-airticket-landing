@@ -3,11 +3,12 @@ import Layout from '../layouts/Layout.astro';
 import PageHero from './PageHero.astro';
 import PostCard from './PostCard.astro';
 import CtaCard from './CtaCard.astro';
+import Faq from './Faq.astro';
 import { t } from '../data/site';
 import { url, type Lang } from '../data/i18n';
-import { posts, type Post } from '../data/posts';
-import { alternates, postPath } from '../data/routes';
-import { articleSchema, breadcrumbSchema } from '../lib/schema';
+import { formatDate, livePosts, readTime, type Post } from '../data/posts';
+import { alternates, blogPath, postPath } from '../data/routes';
+import { articleSchema, breadcrumbSchema, faqSchema } from '../lib/schema';
 
 interface Props { post: Post; lang: Lang }
 const { post, lang } = Astro.props;
@@ -16,23 +17,26 @@ const c = post[lang]!;
 const path = postPath(post, lang);
 const crumbs = [
   { name: ui.home, href: url(lang) },
-  { name: ui.articles, href: `${url(lang)}#blog` },
+  { name: ui.articles, href: blogPath(lang) },
 ];
-const others = posts.filter((p) => p.key !== post.key && p[lang]);
+// Related: same kind first (other countries for a country article), then the rest.
+const others = livePosts(lang).filter((p) => p.key !== post.key);
+const related = [...others.filter((p) => p.kind === post.kind), ...others.filter((p) => p.kind !== post.kind)].slice(0, 4);
 const schema = [
   articleSchema({ title: c.title, description: c.description!, lang, date: post.date!, path }),
   breadcrumbSchema([...crumbs, { name: c.title, href: path }]),
+  ...(c.faq?.length ? [faqSchema(c.faq)] : []),
 ];
 const PLANE = 'M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z';
 ---
-<Layout lang={lang} title={`${c.title} — Easy Airticket`} description={c.description!} alternates={alternates(`post:${post.key}`)} schema={schema} ogType="article">
+<Layout lang={lang} title={c.metaTitle ?? `${c.title} — Easy Airticket`} description={c.description!} alternates={alternates(`post:${post.key}`)} schema={schema} ogType="article">
   <PageHero h1={c.title} crumbs={crumbs}>
     <div class="page-hero__meta">
       <span class="post__author"><span class="post__avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><path d={PLANE}/></svg></span>{ui.author}</span>
       <span aria-hidden="true">·</span>
-      <time datetime={post.date}>{c.dateLabel}</time>
+      <time datetime={post.date}>{formatDate(post.date!, lang)}</time>
       <span aria-hidden="true">·</span>
-      <span>{c.readTime}</span>
+      <span>{readTime(post, lang)}</span>
     </div>
   </PageHero>
 
@@ -40,17 +44,26 @@ const PLANE = 'M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l
     <div class="container">
       <div class="prose">
         <Fragment set:html={c.body} />
-        <CtaCard lang={lang} href={`${url(lang)}#search`} />
+        {!c.faq?.length && <CtaCard lang={lang} href={`${url(lang)}#search`} />}
       </div>
     </div>
   </article>
 
-  {others.length > 0 && (
+  {c.faq?.length ? (
+    <div class="post-page">
+      <Faq title={ui.faqTitle} items={c.faq} />
+      <section class="section">
+        <div class="container"><div class="prose prose--center"><CtaCard lang={lang} href={`${url(lang)}#search`} /></div></div>
+      </section>
+    </div>
+  ) : null}
+
+  {related.length > 0 && (
     <section class="section blog blog--more">
       <div class="container">
         <h2 class="blog__more-title">{ui.moreArticles}</h2>
         <div class="blog__grid blog__grid--2">
-          {others.map((p) => <PostCard post={p} lang={lang} />)}
+          {related.map((p) => <PostCard post={p} lang={lang} />)}
         </div>
       </div>
     </section>

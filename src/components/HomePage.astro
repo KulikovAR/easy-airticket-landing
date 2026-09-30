@@ -4,18 +4,23 @@ import Hero from './Hero.astro';
 import HowItWorks from './HowItWorks.astro';
 import PostCard from './PostCard.astro';
 import Faq from './Faq.astro';
-import { home } from '../data/home';
-import { posts } from '../data/posts';
+import { blogPage, home } from '../data/home';
+import { featuredKeys, livePosts } from '../data/posts';
 import { t } from '../data/site';
 import { url, type Lang } from '../data/i18n';
-import { alternates, faqPath } from '../data/routes';
+import { alternates, blogPath, faqPath } from '../data/routes';
 import { faqSchema, serviceSchema } from '../lib/schema';
 
 interface Props { lang: Lang }
 const { lang } = Astro.props;
 const c = home[lang]!;
 const ui = t(lang);
-const blogPosts = posts.filter((p) => p[lang]);
+// Featured articles first, topped up with the newest ones.
+const live = livePosts(lang);
+const blogPosts = [
+  ...featuredKeys.map((k) => live.find((p) => p.key === k)).filter((p) => p !== undefined),
+  ...live.filter((p) => !featuredKeys.includes(p.key)),
+].slice(0, 3);
 const schema = [serviceSchema(c.h1, url(lang)), faqSchema(c.faq)];
 ---
 <Layout lang={lang} title={c.title} description={c.description} alternates={alternates('home')} schema={schema} search>
@@ -33,6 +38,7 @@ const schema = [serviceSchema(c.h1, url(lang)), faqSchema(c.faq)];
         <div class="blog__grid">
           {blogPosts.map((post) => <PostCard post={post} lang={lang} />)}
         </div>
+        {blogPage[lang] && <p class="section__more"><a href={blogPath(lang)}>{blogPage[lang]!.all} →</a></p>}
       </div>
     </section>
   )}

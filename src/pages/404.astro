@@ -10,9 +10,11 @@ const ui = t('en');
   <section class="section notfound">
     <div class="container">
       <a class="search__btn" href="/">{ui.notFoundBack}</a>
-      {enabledLangs.filter((l) => l !== 'en').map((l) => (
-        <p><a class="link-card" href={url(l)} lang={langInfo(l).htmlLang} style="display:inline-flex;margin-top:16px">{langInfo(l).label} <span class="link-card__arrow">→</span></a></p>
-      ))}
+      <ul class="notfound__langs">
+        {enabledLangs.filter((l) => l !== 'en').map((l) => (
+          <li><a href={url(l)} lang={langInfo(l).htmlLang}>{langInfo(l).label} →</a></li>
+        ))}
+      </ul>
     </div>
   </section>
 </Layout>

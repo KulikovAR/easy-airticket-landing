@@ -24,11 +24,12 @@ src/
   data/            ← all content and settings (edit here)
     i18n.ts          languages: codes, URL prefixes, which ones are enabled
     site.ts          price and UI strings per language
-    home.ts          home page texts (hero, how it works, blog heading, FAQ) + FAQ page titles
+    home.ts          home page texts (hero, how it works, blog heading, FAQ) + FAQ / blog page titles
     faq.ts           full FAQ for the /faq/ page
-    countries.ts     visa country pages, texts per language
-    cities.ts        city pages, each city belongs to a market (e.g. Istanbul → 'tr')
-    posts.ts         blog articles (a post without slug/body = "coming soon" card)
+    posts.ts         blog: hand-written guides (a post without slug/body = "coming soon" card)
+                     + country and city articles generated from the two files below
+    countries.ts     visa country articles, texts per language
+    cities.ts        city articles, each city belongs to a market (e.g. Istanbul → 'tr')
     places.ts        TEST airports for the From / To dropdown
     company.ts       brand, contact email, WhatsApp, Instagram
     seo.ts           search engine verification, analytics IDs, IndexNow key
@@ -49,15 +50,16 @@ seo/               ← semantic core and launch checklist (Russian)
 | | English (main) | Turkish |
 |---|---|---|
 | Home | `/` | `/tr/` |
-| Country | `/<country>-visa-flight-reservation/` | `/tr/<ulke>-vizesi-icin-ucak-rezervasyonu/` |
-| City | `/<city>-visa-flight-reservation/` | `/tr/<sehir>-vize-icin-ucak-rezervasyonu/` |
 | FAQ | `/faq/` | `/tr/sss/` |
-| Article | `/blog/<slug>/` | `/tr/blog/<slug>/` |
+| Blog | `/blog/` | `/tr/blog/` |
+| Guide | `/blog/<slug>/` | `/tr/blog/<slug>/` |
+| Country | `/blog/<country>-visa-flight-reservation/` | `/tr/blog/<ulke>-vizesi-icin-ucak-rezervasyonu/` |
+| City | `/blog/<city>-visa-flight-reservation/` | `/tr/blog/<sehir>-vize-icin-ucak-rezervasyonu/` |
 
 ## Adding content
 
 - **Country / city / article** — one object in `countries.ts` / `cities.ts` / `posts.ts` with a text for each language.
-  Pages, footer links, related links, sitemap, hreflang and `llms.txt` update automatically.
+  Pages, the blog index, related articles, sitemap, hreflang and `llms.txt` update automatically.
   A page is generated only in the languages that have a text for it.
 - **New language** — set `enabled: true` in `i18n.ts`, add UI strings to `site.ts`, texts to `home.ts` and `faq.ts`,
   then add its texts to countries / posts and its own cities (with `market: '<lang>'`).

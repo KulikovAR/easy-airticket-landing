@@ -1,0 +1,42 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PageHero from './PageHero.astro';
+import PostCard from './PostCard.astro';
+import { t } from '../data/site';
+import { url, type Lang } from '../data/i18n';
+import { blogPage } from '../data/home';
+import { posts, type PostKind } from '../data/posts';
+import { alternates, blogPath } from '../data/routes';
+import { breadcrumbSchema } from '../lib/schema';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const ui = t(lang);
+const c = blogPage[lang]!;
+const crumbs = [
+  { name: ui.home, href: url(lang) },
+  { name: ui.articles, href: blogPath(lang) },
+];
+const groups: { kind: PostKind; title: string }[] = [
+  { kind: 'guide', title: c.guides },
+  { kind: 'country', title: c.countries },
+  { kind: 'city', title: c.cities },
+];
+const byKind = (kind: PostKind) => posts.filter((p) => p.kind === kind && p[lang]);
+---
+<Layout lang={lang} title={c.title} description={c.description} alternates={alternates('blog')} schema={[breadcrumbSchema(crumbs)]}>
+  <PageHero h1={c.h1} lead={c.lead} crumbs={crumbs} />
+
+  <section class="section blog blog-index">
+    <div class="container">
+      {groups.filter((g) => byKind(g.kind).length).map((g) => (
+        <div class="blog-index__group">
+          <h2>{g.title}</h2>
+          <div class="blog__grid">
+            {byKind(g.kind).map((post) => <PostCard post={post} lang={lang} />)}
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+</Layout>

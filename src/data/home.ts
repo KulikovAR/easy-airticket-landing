@@ -107,3 +107,29 @@ export const faqPage: Partial<Record<Lang, { slug: string; title: string; descri
     lead: 'Vize için uçuş rezervasyonu, PNR kodu, geçerlilik ve ödeme hakkında merak ettikleriniz.',
   },
 };
+
+/** Blog index page. */
+export const blogPage: Partial<Record<Lang, { slug: string; title: string; description: string; h1: string; lead: string; all: string; guides: string; countries: string; cities: string }>> = {
+  en: {
+    slug: 'blog',
+    title: 'Visa & Travel Guides — Flight Reservation for Visa | Easy Airticket',
+    description: 'Guides on flight reservations for visa applications: Schengen, Germany, France, UK, USA, Dubai and more — requirements, documents and booking tips.',
+    h1: 'Visa & travel guides',
+    lead: 'Flight reservations, visa documents and consulate requirements — by topic, country and city.',
+    all: 'All articles',
+    guides: 'Guides',
+    countries: 'Visa countries',
+    cities: 'Cities',
+  },
+  tr: {
+    slug: 'blog',
+    title: 'Vize ve Seyahat Rehberleri — Vize İçin Uçak Rezervasyonu | Easy Airticket',
+    description: 'Vize başvurusu için uçak rezervasyonu rehberleri: Schengen, Almanya, Fransa, İngiltere, Amerika, Dubai ve daha fazlası — şartlar, belgeler ve ipuçları.',
+    h1: 'Vize ve seyahat rehberleri',
+    lead: 'Uçuş rezervasyonu, vize belgeleri ve konsolosluk şartları — konuya, ülkeye ve şehre göre.',
+    all: 'Tüm yazılar',
+    guides: 'Rehberler',
+    countries: 'Vize ülkeleri',
+    cities: 'Şehirler',
+  },
+};

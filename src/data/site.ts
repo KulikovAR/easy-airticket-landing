@@ -35,7 +35,6 @@ const en = {
   articles: 'Articles',
   moreArticles: 'More articles',
   readMore: 'Read more',
-  comingSoon: 'Coming soon',
   author: 'Easy Airticket',
 
   footer: {
@@ -108,7 +107,6 @@ export const ui: Partial<Record<Lang, UI>> & { en: UI } = {
     articles: 'Yazılar',
     moreArticles: 'Diğer yazılar',
     readMore: 'Devamını oku',
-    comingSoon: 'Yakında',
     author: 'Easy Airticket',
 
     footer: {

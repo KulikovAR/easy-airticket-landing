@@ -5,7 +5,7 @@ import HowItWorks from './HowItWorks.astro';
 import PostCard from './PostCard.astro';
 import Faq from './Faq.astro';
 import { blogPage, home } from '../data/home';
-import { featuredKeys, livePosts } from '../data/posts';
+import { featuredKeys, postsIn } from '../data/posts';
 import { t } from '../data/site';
 import { url, type Lang } from '../data/i18n';
 import { alternates, blogPath, faqPath } from '../data/routes';
@@ -16,7 +16,7 @@ const { lang } = Astro.props;
 const c = home[lang]!;
 const ui = t(lang);
 // Featured articles first, topped up with the newest ones.
-const live = livePosts(lang);
+const live = postsIn(lang);
 const blogPosts = [
   ...featuredKeys.map((k) => live.find((p) => p.key === k)).filter((p) => p !== undefined),
   ...live.filter((p) => !featuredKeys.includes(p.key)),

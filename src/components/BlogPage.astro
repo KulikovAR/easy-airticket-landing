@@ -17,10 +17,10 @@ const crumbs = [
   { name: ui.home, href: url(lang) },
   { name: ui.articles, href: blogPath(lang) },
 ];
+// City articles are for search only: they are in the sitemap and link to each other, but not listed here.
 const groups: { kind: PostKind; title: string }[] = [
   { kind: 'guide', title: c.guides },
   { kind: 'country', title: c.countries },
-  { kind: 'city', title: c.cities },
 ];
 const byKind = (kind: PostKind) => posts.filter((p) => p.kind === kind && p[lang]);
 ---

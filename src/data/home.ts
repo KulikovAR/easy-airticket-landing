@@ -109,7 +109,7 @@ export const faqPage: Partial<Record<Lang, { slug: string; title: string; descri
 };
 
 /** Blog index page. */
-export const blogPage: Partial<Record<Lang, { slug: string; title: string; description: string; h1: string; lead: string; all: string; guides: string; countries: string; cities: string }>> = {
+export const blogPage: Partial<Record<Lang, { slug: string; title: string; description: string; h1: string; lead: string; all: string; guides: string; countries: string }>> = {
   en: {
     slug: 'blog',
     title: 'Visa & Travel Guides — Flight Reservation for Visa | Easy Airticket',
@@ -119,7 +119,6 @@ export const blogPage: Partial<Record<Lang, { slug: string; title: string; descr
     all: 'All articles',
     guides: 'Guides',
     countries: 'Visa countries',
-    cities: 'Cities',
   },
   tr: {
     slug: 'blog',
@@ -130,6 +129,5 @@ export const blogPage: Partial<Record<Lang, { slug: string; title: string; descr
     all: 'Tüm yazılar',
     guides: 'Rehberler',
     countries: 'Vize ülkeleri',
-    cities: 'Şehirler',
   },
 };

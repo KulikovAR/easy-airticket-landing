@@ -1,6 +1,6 @@
 // Single registry of every page on the site, in every enabled language.
 // Used by the page generator, hreflang tags, the language menu, sitemap.xml and llms.txt.
-import { livePosts, type Post } from './posts';
+import { postsIn, type Post } from './posts';
 import { home, faqPage, blogPage } from './home';
 import { generalFaq } from './faq';
 import { enabledLangs, url, type Lang } from './i18n';
@@ -28,7 +28,7 @@ export function allRoutes(): Route[] {
     ...(faqPage[lang] && generalFaq[lang] ? [{ key: 'faq', page: 'faq' as const, lang, path: faqPath(lang) }] : []),
     ...(blogPage[lang] ? [{ key: 'blog', page: 'blog' as const, lang, path: blogPath(lang) }] : []),
     ...(blogPage[lang]
-      ? livePosts(lang).map((post) => ({ key: `post:${post.key}`, page: 'post' as const, lang, path: postPath(post, lang), post }))
+      ? postsIn(lang).map((post) => ({ key: `post:${post.key}`, page: 'post' as const, lang, path: postPath(post, lang), post }))
       : []),
   ]);
 }

@@ -6,7 +6,7 @@ import CtaCard from './CtaCard.astro';
 import Faq from './Faq.astro';
 import { t } from '../data/site';
 import { url, type Lang } from '../data/i18n';
-import { formatDate, livePosts, readTime, type Post } from '../data/posts';
+import { formatDate, postsIn, readTime, type Post } from '../data/posts';
 import { alternates, blogPath, postPath } from '../data/routes';
 import { articleSchema, breadcrumbSchema, faqSchema } from '../lib/schema';
 
@@ -20,7 +20,7 @@ const crumbs = [
   { name: ui.articles, href: blogPath(lang) },
 ];
 // Related: same kind first (other countries for a country article), then the rest.
-const others = livePosts(lang).filter((p) => p.key !== post.key);
+const others = postsIn(lang).filter((p) => p.key !== post.key);
 const related = [...others.filter((p) => p.kind === post.kind), ...others.filter((p) => p.kind !== post.kind)].slice(0, 4);
 const schema = [
   articleSchema({ title: c.title, description: c.description!, lang, date: post.date!, path }),

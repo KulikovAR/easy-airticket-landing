@@ -639,8 +639,6 @@ a.post:hover .post__art { transform: scale(1.1); }
 }
 a.post:hover .post__more { opacity: 1; }
 a.post:hover .post__more span { transform: none; }
-.post--soon .post__more { opacity: 1; background: rgba(9, 20, 40, .35); }
-.post--soon .post__more span { transform: none; background: rgba(255, 255, 255, .95); color: var(--ink); }
 
 .post__title {
   min-height: 48px;
@@ -652,7 +650,6 @@ a.post:hover .post__more span { transform: none; }
   transition: color .3s;
 }
 a.post:hover .post__title { color: var(--brand); }
-.post--soon .post__title { color: var(--muted); }
 
 .post__meta {
   display: flex;
@@ -684,7 +681,6 @@ a.post:hover .post__title { color: var(--brand); }
   background: var(--brand);
 }
 .post__avatar svg { width: 15px; height: 15px; fill: #fff; }
-.post__soon { font-weight: 600; }
 
 /* Article page */
 .page-hero {

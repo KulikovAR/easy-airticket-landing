@@ -1,6 +1,6 @@
 // llms.txt / llms-full.txt — description of the service for AI search (https://llmstxt.org).
 import { generalFaq } from '../data/faq';
-import { livePosts, type Post, type PostKind } from '../data/posts';
+import { postsIn, type Post, type PostKind } from '../data/posts';
 import { home } from '../data/home';
 import { price } from '../data/site';
 import { company } from '../data/company';
@@ -17,7 +17,7 @@ const postLine = (p: Post, lang: Lang) => `- [${p[lang]!.title}](${abs(postPath(
 
 function langIndex(lang: Lang): string {
   const name = langInfo(lang).label;
-  const posts = livePosts(lang);
+  const posts = postsIn(lang);
   return [
     `## ${name}`,
     `- [${home[lang]!.h1}](${abs(url(lang))}): ${home[lang]!.description}`,
@@ -59,12 +59,12 @@ const stripHtml = (html: string) =>
 function postFull(p: Post, lang: Lang): string {
   const c = p[lang]!;
   const faq = (c.faq ?? []).map((f) => `**${f.q}**\n${f.a}`).join('\n\n');
-  return `## ${c.title}\n\nURL: ${abs(postPath(p, lang))}\n\n${stripHtml(c.body!)}${faq ? `\n\n${faq}` : ''}`;
+  return `## ${c.title}\n\nURL: ${abs(postPath(p, lang))}\n\n${stripHtml(c.body)}${faq ? `\n\n${faq}` : ''}`;
 }
 
 function langFull(lang: Lang): string {
   const faq = (generalFaq[lang] ?? []).map((f) => `**${f.q}**\n${f.a}`).join('\n\n');
-  const blocks = [...(faq ? [`## FAQ\n\nURL: ${abs(faqPath(lang))}\n\n${faq}`] : []), ...livePosts(lang).map((p) => postFull(p, lang))];
+  const blocks = [...(faq ? [`## FAQ\n\nURL: ${abs(faqPath(lang))}\n\n${faq}`] : []), ...postsIn(lang).map((p) => postFull(p, lang))];
   return `# ${langInfo(lang).label}\n\n${blocks.join('\n\n---\n\n')}`;
 }
 

@@ -1,0 +1,21 @@
+---
+// Generates every page of the site in every enabled language from the route registry (src/data/routes.ts).
+import type { GetStaticPaths } from 'astro';
+import HomePage from '../components/HomePage.astro';
+import LandingPage from '../components/LandingPage.astro';
+import FaqPage from '../components/FaqPage.astro';
+import PostPage from '../components/PostPage.astro';
+import { allRoutes, type Route } from '../data/routes';
+
+export const getStaticPaths = (() =>
+  allRoutes().map((route) => ({
+    params: { path: route.path.replace(/^\/|\/$/g, '') || undefined },
+    props: { route },
+  }))) satisfies GetStaticPaths;
+
+const { route } = Astro.props as { route: Route };
+---
+{route.page === 'home' && <HomePage lang={route.lang} />}
+{route.page === 'faq' && <FaqPage lang={route.lang} />}
+{route.page === 'landing' && <LandingPage landing={route.landing} lang={route.lang} />}
+{route.page === 'post' && <PostPage post={route.post} lang={route.lang} />}

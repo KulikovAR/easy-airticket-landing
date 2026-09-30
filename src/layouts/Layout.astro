@@ -1,0 +1,130 @@
+---
+import '@fontsource-variable/inter';
+import 'flatpickr/dist/flatpickr.min.css';
+import '../styles/global.css';
+import { t } from '../data/site';
+import { company } from '../data/company';
+import { seo } from '../data/seo';
+import { defaultLang, langInfo, languages, url, type Lang } from '../data/i18n';
+import { organizationSchema, websiteSchema } from '../lib/schema';
+import LangMenu from '../components/LangMenu.astro';
+import Footer from '../components/Footer.astro';
+
+interface Props {
+  lang: Lang;
+  title: string;
+  description: string;
+  /** Paths of this page in other languages (hreflang + language menu). */
+  alternates?: Partial<Record<Lang, string>>;
+  schema?: object[];
+  noindex?: boolean;
+  ogType?: 'website' | 'article';
+  /** Pages with the search form get the "coming soon" modal. */
+  search?: boolean;
+}
+
+const { lang, title, description, alternates = {}, schema = [], noindex = false, ogType = 'website', search = false } = Astro.props;
+const ui = t(lang);
+const info = langInfo(lang);
+const site = Astro.site!;
+const abs = (p: string) => new URL(p, site).href;
+const canonical = abs(Astro.url.pathname);
+const ogImage = abs(`/og/og-${lang}.png`);
+const hreflangs = languages.filter((l) => alternates[l.code]);
+const xDefault = alternates[defaultLang] ?? alternates[lang];
+const hasAnalytics = Boolean(seo.ga4Id || seo.yandexMetrikaId);
+---
+<!DOCTYPE html>
+<html lang={info.htmlLang}>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script is:inline>document.documentElement.classList.add('js')</script>
+  <title>{title}</title>
+  <meta name="description" content={description}>
+  {noindex ? <meta name="robots" content="noindex"> : <link rel="canonical" href={canonical}>}
+  {!noindex && hreflangs.map((l) => <link rel="alternate" hreflang={l.hreflang} href={abs(alternates[l.code]!)}>)}
+  {!noindex && xDefault && <link rel="alternate" hreflang="x-default" href={abs(xDefault)}>}
+
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="alternate" type="text/plain" href="/llms.txt" title="llms.txt">
+  <meta name="theme-color" content="#0b2a5b">
+  {seo.googleSiteVerification && <meta name="google-site-verification" content={seo.googleSiteVerification}>}
+  {seo.yandexVerification && <meta name="yandex-verification" content={seo.yandexVerification}>}
+  {seo.bingVerification && <meta name="msvalidate.01" content={seo.bingVerification}>}
+
+  <meta property="og:type" content={ogType}>
+  <meta property="og:site_name" content={company.brand}>
+  <meta property="og:title" content={title}>
+  <meta property="og:description" content={description}>
+  <meta property="og:url" content={canonical}>
+  <meta property="og:locale" content={info.ogLocale}>
+  {hreflangs.filter((l) => l.code !== lang).map((l) => <meta property="og:locale:alternate" content={l.ogLocale}>)}
+  <meta property="og:image" content={ogImage}>
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content={title}>
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content={title}>
+  <meta name="twitter:description" content={description}>
+  <meta name="twitter:image" content={ogImage}>
+
+  <script type="application/ld+json" set:html={JSON.stringify(websiteSchema())} />
+  <script type="application/ld+json" set:html={JSON.stringify(organizationSchema())} />
+  {schema.map((s) => <script type="application/ld+json" set:html={JSON.stringify(s)} />)}
+</head>
+<body>
+
+<header class="header">
+  <div class="container header__inner">
+    <a class="logo" href={url(lang)}>
+      <span class="logo__mark"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg></span>
+      {company.brand}
+    </a>
+    <LangMenu lang={lang} alternates={alternates} />
+  </div>
+</header>
+
+<main>
+  <slot />
+</main>
+
+<Footer lang={lang} alternates={alternates} />
+
+{company.whatsapp && (
+  <a class="wa-float" href={`https://wa.me/${company.whatsapp}`} rel="nofollow" aria-label="WhatsApp">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.04 2a9.9 9.9 0 0 0-8.5 14.98L2 22l5.16-1.5A9.9 9.9 0 1 0 12.04 2zm5.8 14.13c-.25.7-1.44 1.33-2 1.38-.51.05-1 .24-3.35-.7-2.83-1.12-4.62-4.02-4.76-4.2-.14-.19-1.14-1.52-1.14-2.9s.72-2.06.98-2.34a1.03 1.03 0 0 1 .75-.35h.54c.17 0 .41-.07.64.49.25.58.83 2 .9 2.15.08.14.12.31.03.5-.1.18-.14.3-.28.46l-.42.49c-.14.14-.29.29-.12.57.16.28.73 1.2 1.57 1.95 1.08.96 1.99 1.26 2.27 1.4.28.14.45.12.61-.07.17-.19.7-.82.9-1.1.18-.28.37-.23.62-.14.25.1 1.62.77 1.9.9.28.15.46.22.53.34.07.12.07.68-.18 1.37z"/></svg>
+  </a>
+)}
+
+{search && (
+  <div class="modal" id="soon-modal" role="dialog" aria-modal="true" aria-labelledby="soon-title" aria-hidden="true">
+    <div class="modal__box">
+      <button class="modal__close" type="button" aria-label={ui.close} data-close>×</button>
+      <div class="modal__emoji" aria-hidden="true">🛠️</div>
+      <h2 id="soon-title">{ui.soonTitle}</h2>
+      <p>{ui.soonText}</p>
+      <button class="search__btn" type="button" data-close>{ui.ok}</button>
+    </div>
+  </div>
+)}
+
+{hasAnalytics && (
+  <div class="consent" id="consent" data-ga4={seo.ga4Id} data-ym={seo.yandexMetrikaId} hidden>
+    <p>{ui.consent.text}</p>
+    <div class="consent__actions">
+      <button type="button" class="consent__btn consent__btn--ghost" data-consent="necessary">{ui.consent.reject}</button>
+      <button type="button" class="consent__btn" data-consent="all">{ui.consent.accept}</button>
+    </div>
+  </div>
+)}
+
+<script>
+  import '../scripts/app.js';
+  import '../scripts/consent';
+</script>
+</body>
+</html>

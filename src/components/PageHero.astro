@@ -1,0 +1,15 @@
+---
+import Crumbs from './Crumbs.astro';
+import type { Crumb } from '../data/types';
+
+interface Props { h1: string; lead?: string; crumbs?: Crumb[] }
+const { h1, lead, crumbs } = Astro.props;
+---
+<section class="page-hero">
+  <div class="container page-hero__inner">
+    {crumbs && <Crumbs crumbs={crumbs} />}
+    <h1>{h1}</h1>
+    {lead && <p class="page-hero__lead">{lead}</p>}
+    <slot />
+  </div>
+</section>

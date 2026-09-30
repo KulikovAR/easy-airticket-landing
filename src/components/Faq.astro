@@ -1,0 +1,28 @@
+---
+import type { Faq as FaqItem } from '../data/types';
+
+interface Props { title?: string; items: FaqItem[]; id?: string; allHref?: string; allLabel?: string }
+const { title, items, id = 'faq', allHref, allLabel } = Astro.props;
+---
+<section class="section faq" id={id}>
+  <div class="container">
+    {title && <h2 class="faq__title reveal">{title}</h2>}
+    <div class="faq__list">
+      {items.map((item, i) => (
+        <div class="faq__item reveal">
+          <h3 class="faq__q">
+            <button type="button" id={`faq-q${i + 1}`} aria-expanded="false" aria-controls={`faq-a${i + 1}`}>
+              <span class="faq__text">{item.q}</span>
+              <span class="faq__num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+              <span class="faq__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5h2v14h-2z"/><path d="M5 11h14v2H5z"/></svg></span>
+            </button>
+          </h3>
+          <div class="faq__a" id={`faq-a${i + 1}`} role="region" aria-labelledby={`faq-q${i + 1}`}>
+            <div><p>{item.a}</p></div>
+          </div>
+        </div>
+      ))}
+    </div>
+    {allHref && <p class="faq__all"><a href={allHref}>{allLabel} →</a></p>}
+  </div>
+</section>

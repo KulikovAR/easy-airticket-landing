@@ -1,0 +1,31 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PageHero from './PageHero.astro';
+import Faq from './Faq.astro';
+import CtaCard from './CtaCard.astro';
+import { t } from '../data/site';
+import { url, type Lang } from '../data/i18n';
+import { faqPage } from '../data/home';
+import { generalFaq } from '../data/faq';
+import { alternates, faqPath } from '../data/routes';
+import { breadcrumbSchema, faqSchema } from '../lib/schema';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const ui = t(lang);
+const c = faqPage[lang]!;
+const items = generalFaq[lang]!;
+const crumbs = [
+  { name: ui.home, href: url(lang) },
+  { name: ui.faqTitle, href: faqPath(lang) },
+];
+---
+<Layout lang={lang} title={c.title} description={c.description} alternates={alternates('faq')} schema={[faqSchema(items), breadcrumbSchema(crumbs)]}>
+  <PageHero h1={ui.faqTitle} lead={c.lead} crumbs={crumbs} />
+  <div class="faq-page">
+    <Faq items={items} />
+    <section class="section">
+      <div class="container"><div class="prose prose--center"><CtaCard lang={lang} href={`${url(lang)}#search`} /></div></div>
+    </section>
+  </div>
+</Layout>

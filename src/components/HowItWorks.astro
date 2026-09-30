@@ -1,0 +1,74 @@
+---
+import { home } from '../data/home';
+import type { Lang } from '../data/i18n';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const h = (home[lang] ?? home.en!).how;
+const PLANE = 'M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z';
+const icons = {
+  search: 'M15.5 14h-.79l-.28-.27A6.47 6.47 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z',
+  passport: 'M18 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2zm-6 4a4 4 0 1 1 0 8 4 4 0 0 1 0-8zm4 12H8v-2h8v2zm-4-6.2a1.8 1.8 0 1 0 0-3.6 1.8 1.8 0 0 0 0 3.6z',
+  card: 'M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z',
+  mail: 'M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z',
+};
+---
+<section class="section how" id={h.id}>
+  <div class="container">
+    <header class="how__head reveal">
+      <h2>{h.h2}</h2>
+      <p class="section__lead">{h.lead}</p>
+    </header>
+
+    <div class="bento">
+      <div class="bento__card bento__card--visual bento__card--ticket reveal" aria-hidden="true">
+        <svg class="bento__plane" viewBox="0 0 24 24"><path d={PLANE}/></svg>
+        <div class="ticket">
+          <div class="ticket__status"><span class="ticket__ok">✓</span>{h.ticket.status}</div>
+          <div class="ticket__route">
+            <div><strong>IST</strong><small>Istanbul</small></div>
+            <span class="ticket__line"><svg viewBox="0 0 24 24"><path d={PLANE}/></svg></span>
+            <div class="ticket__to"><strong>LHR</strong><small>London</small></div>
+          </div>
+          <div class="ticket__meta">
+            <div><small>{h.ticket.passenger}</small>JOHN SMITH</div>
+            <div><small>{h.ticket.date}</small>14.10</div>
+            <div><small>PNR</small>EA7K2Q</div>
+          </div>
+        </div>
+        <div class="bento__chip"><span>⏱</span>{h.ticket.chip}</div>
+      </div>
+
+      <article class="bento__card bento__card--brand reveal">
+        <span class="bento__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d={icons.search}/></svg></span>
+        <h3>{h.route[0]}</h3>
+        <p>{h.route[1]}</p>
+      </article>
+
+      <article class="bento__card bento__card--ink reveal">
+        <span class="bento__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d={icons.passport}/></svg></span>
+        <h3>{h.details[0]}</h3>
+        <p>{h.details[1]}</p>
+      </article>
+
+      <article class="bento__card bento__card--ink reveal">
+        <span class="bento__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d={icons.card}/></svg></span>
+        <h3>{h.payment[0]}</h3>
+        <p set:html={h.payment[1]} />
+      </article>
+
+      <article class="bento__card bento__card--visual bento__card--validity reveal">
+        <span class="bento__label">{h.validity.label}</span>
+        <div class="validity__big" aria-hidden="true"><small>{h.validity.upTo}</small>7<span>{h.validity.days}</span></div>
+        <h3 class="visually-hidden">{h.validity.title}</h3>
+        <p>{h.validity.text}</p>
+      </article>
+
+      <article class="bento__card bento__card--brand reveal">
+        <span class="bento__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d={icons.mail}/></svg></span>
+        <h3>{h.documents[0]}</h3>
+        <p>{h.documents[1]}</p>
+      </article>
+    </div>
+  </div>
+</section>

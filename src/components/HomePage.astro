@@ -1,0 +1,41 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Hero from './Hero.astro';
+import HowItWorks from './HowItWorks.astro';
+import PostCard from './PostCard.astro';
+import Faq from './Faq.astro';
+import { home } from '../data/home';
+import { posts } from '../data/posts';
+import { t } from '../data/site';
+import { url, type Lang } from '../data/i18n';
+import { alternates, faqPath } from '../data/routes';
+import { faqSchema, serviceSchema } from '../lib/schema';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const c = home[lang]!;
+const ui = t(lang);
+const blogPosts = posts.filter((p) => p[lang]);
+const schema = [serviceSchema(c.h1, url(lang)), faqSchema(c.faq)];
+---
+<Layout lang={lang} title={c.title} description={c.description} alternates={alternates('home')} schema={schema} search>
+  <Hero lang={lang} h1={c.h1} lead={c.lead} />
+
+  <HowItWorks lang={lang} />
+
+  {blogPosts.length > 0 && (
+    <section class="section blog" id="blog">
+      <div class="container">
+        <header class="blog__head reveal">
+          <h2>{c.blog.h2}</h2>
+          <p class="section__lead">{c.blog.lead}</p>
+        </header>
+        <div class="blog__grid">
+          {blogPosts.map((post) => <PostCard post={post} lang={lang} />)}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <Faq title={ui.faqTitle} items={c.faq} allHref={faqPath(lang)} allLabel={ui.footer.faq} />
+</Layout>

@@ -1,0 +1,14 @@
+---
+import { t, type Lang } from '../data/site';
+
+interface Props { lang: Lang; href: string }
+const { lang, href } = Astro.props;
+const ui = t(lang);
+---
+<aside class="cta-card">
+  <div>
+    <h2>{ui.ctaTitle}</h2>
+    <p>{ui.ctaText}</p>
+  </div>
+  <a class="search__btn" href={href}>{ui.ctaButton}</a>
+</aside>

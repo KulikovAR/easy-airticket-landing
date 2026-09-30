@@ -1,0 +1,58 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PageHero from './PageHero.astro';
+import PostCard from './PostCard.astro';
+import CtaCard from './CtaCard.astro';
+import { t } from '../data/site';
+import { url, type Lang } from '../data/i18n';
+import { posts, type Post } from '../data/posts';
+import { alternates, postPath } from '../data/routes';
+import { articleSchema, breadcrumbSchema } from '../lib/schema';
+
+interface Props { post: Post; lang: Lang }
+const { post, lang } = Astro.props;
+const ui = t(lang);
+const c = post[lang]!;
+const path = postPath(post, lang);
+const crumbs = [
+  { name: ui.home, href: url(lang) },
+  { name: ui.articles, href: `${url(lang)}#blog` },
+];
+const others = posts.filter((p) => p.key !== post.key && p[lang]);
+const schema = [
+  articleSchema({ title: c.title, description: c.description!, lang, date: post.date!, path }),
+  breadcrumbSchema([...crumbs, { name: c.title, href: path }]),
+];
+const PLANE = 'M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z';
+---
+<Layout lang={lang} title={`${c.title} — Easy Airticket`} description={c.description!} alternates={alternates(`post:${post.key}`)} schema={schema} ogType="article">
+  <PageHero h1={c.title} crumbs={crumbs}>
+    <div class="page-hero__meta">
+      <span class="post__author"><span class="post__avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><path d={PLANE}/></svg></span>{ui.author}</span>
+      <span aria-hidden="true">·</span>
+      <time datetime={post.date}>{c.dateLabel}</time>
+      <span aria-hidden="true">·</span>
+      <span>{c.readTime}</span>
+    </div>
+  </PageHero>
+
+  <article class="section article">
+    <div class="container">
+      <div class="prose">
+        <Fragment set:html={c.body} />
+        <CtaCard lang={lang} href={`${url(lang)}#search`} />
+      </div>
+    </div>
+  </article>
+
+  {others.length > 0 && (
+    <section class="section blog blog--more">
+      <div class="container">
+        <h2 class="blog__more-title">{ui.moreArticles}</h2>
+        <div class="blog__grid blog__grid--2">
+          {others.map((p) => <PostCard post={p} lang={lang} />)}
+        </div>
+      </div>
+    </section>
+  )}
+</Layout>

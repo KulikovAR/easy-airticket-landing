@@ -1,0 +1,18 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PageHero from '../components/PageHero.astro';
+import { t } from '../data/site';
+import { enabledLangs, langInfo, url } from '../data/i18n';
+const ui = t('en');
+---
+<Layout lang="en" title={`${ui.notFoundTitle} — Easy Airticket`} description={ui.notFoundText} noindex>
+  <PageHero h1={ui.notFoundTitle} lead={ui.notFoundText} />
+  <section class="section notfound">
+    <div class="container">
+      <a class="search__btn" href="/">{ui.notFoundBack}</a>
+      {enabledLangs.filter((l) => l !== 'en').map((l) => (
+        <p><a class="link-card" href={url(l)} lang={langInfo(l).htmlLang} style="display:inline-flex;margin-top:16px">{langInfo(l).label} <span class="link-card__arrow">→</span></a></p>
+      ))}
+    </div>
+  </section>
+</Layout>

@@ -1,0 +1,73 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Hero from './Hero.astro';
+import HowItWorks from './HowItWorks.astro';
+import Faq from './Faq.astro';
+import CtaCard from './CtaCard.astro';
+import LinkGrid from './LinkGrid.astro';
+import { t } from '../data/site';
+import { langInfo, url, type Lang } from '../data/i18n';
+import { alternates, landingPath, landingsIn } from '../data/routes';
+import type { Landing } from '../data/types';
+import { breadcrumbSchema, faqSchema, serviceSchema } from '../lib/schema';
+
+interface Props { landing: Landing; lang: Lang }
+const { landing, lang } = Astro.props;
+const ui = t(lang);
+const c = landing[lang]!;
+const path = landingPath(landing, lang);
+const isCountry = landing.kind === 'country';
+
+const crumbs = [
+  { name: ui.home, href: url(lang) },
+  { name: c.name, href: path },
+];
+// City pages are market-specific: mark the country they serve.
+const areaServed = landing.market ? langInfo(landing.market).market : undefined;
+const schema = [serviceSchema(c.h1, path, areaServed), faqSchema(c.faq), breadcrumbSchema(crumbs)];
+
+const sameKind = landingsIn(lang, landing.kind).filter((l) => l.key !== landing.key);
+const otherKind = landingsIn(lang, isCountry ? 'city' : 'country');
+---
+<Layout lang={lang} title={c.title} description={c.description} alternates={alternates(`landing:${landing.key}`)} schema={schema} search>
+  <Hero lang={lang} h1={c.h1} lead={c.lead} crumbs={crumbs} />
+
+  <article class="section article landing">
+    <div class="container">
+      <div class="prose">
+        {c.intro.map((p, i) => <p class={i === 0 ? 'prose__lead' : undefined}>{p}</p>)}
+        {c.sections.map((s) => (
+          <>
+            <h2>{s.h2}</h2>
+            {s.paragraphs?.map((p) => <p>{p}</p>)}
+            {s.list && <ul>{s.list.map((item) => <li>{item}</li>)}</ul>}
+          </>
+        ))}
+        <CtaCard lang={lang} href="#search" />
+      </div>
+    </div>
+  </article>
+
+  <HowItWorks lang={lang} />
+
+  <Faq title={ui.faqTitle} items={c.faq} />
+
+  {(sameKind.length > 0 || otherKind.length > 0) && (
+    <section class="section links">
+      <div class="container">
+        {sameKind.length > 0 && (
+          <>
+            <h2>{isCountry ? ui.relatedCountries : ui.relatedCities}</h2>
+            <LinkGrid items={sameKind} lang={lang} />
+          </>
+        )}
+        {otherKind.length > 0 && (
+          <>
+            <h2>{isCountry ? ui.citiesTitle : ui.countriesTitle}</h2>
+            <LinkGrid items={otherKind} lang={lang} />
+          </>
+        )}
+      </div>
+    </section>
+  )}
+</Layout>
